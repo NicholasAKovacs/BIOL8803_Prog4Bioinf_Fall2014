@@ -1,2 +1,2 @@
 # ProgrammingForBioinformatics
-Scripts from class
+Perl and Bash scripts from class
