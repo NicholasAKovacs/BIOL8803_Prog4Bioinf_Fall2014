@@ -2,10 +2,15 @@
 use strict;
 use warnings;
 
+# Filenames will be taken as commandline arguments in the order -> knownGene.txt, kgXref.txt, InfectiousDisease-GeneSets.txt
+# InfectiousDisease-GeneSets.txt contains names of genes involved in infectious diseases
+# Outputs the genetic coordinates of the infections genes
+
 open KNOWN, $ARGV[0];
 open Kg, $ARGV[1];
 open INFECT, $ARGV[2];
 
+# Make an array of all the names from InfectiousDisease-GeneSets.txt
 my @InfectName;
 my $first;
 while ( my $line = <INFECT> ) {
@@ -13,8 +18,12 @@ while ( my $line = <INFECT> ) {
 	push(@InfectName, $line);
 }
 
+# Declare 2 hashes for KnownGene.txt
 my %KnownHash;
 my %KnownHashCoords;
+
+# Fill the KnownHash with the alternate gene name (InfectiousDiseases has one name, KnownGene uses a different name)
+# Fill KnownHashCoords with the start and end coordnates
 while ( my $Knownline = <KNOWN> ) {
 	my @Knownfields=split("\t", $Knownline);
 	$KnownHash{$Knownfields[10]}=$Knownfields[0];
@@ -23,6 +32,7 @@ while ( my $Knownline = <KNOWN> ) {
 #%KnownHash key is like NP_057112
 #%KnownHash value is uc-something name
 
+# Declare and fill a hash with the gene name conversions that are needed to go from the gene name in InfectiosDisease to KnownGene
 my %KgHash;
 while ( my $Kgline = <Kg> ) {
 	my @Kgfields=split("\t", $Kgline);
@@ -30,6 +40,8 @@ while ( my $Kgline = <Kg> ) {
 }
 #%KgHash key is uc-something
 #%Kghash value looks like INFECT
+
+# I know this nested loop is bad practice, but it works
 
 foreach my $Knownkey (keys %KnownHash) {
 	foreach my $Kgkey (keys %KgHash) {
